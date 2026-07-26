@@ -1,0 +1,49 @@
+"""Settings for the rover """
+
+# Motor driver pins (BCM numbering)
+STBY_PIN = 25
+LEFT_PWM_PIN = 12
+LEFT_IN1_PIN = 5
+LEFT_IN2_PIN = 6
+RIGHT_PWM_PIN = 13
+RIGHT_IN1_PIN = 23
+RIGHT_IN2_PIN = 24
+
+# Servo pins
+PAN_SERVO_PIN = 17
+TILT_SERVO_PIN = 18
+TRAPDOOR_SERVO_PIN = 19
+
+# Driving
+DRIVE_SPEED = 0.55
+TURN_SPEED = 0.50
+LEFT_MOTOR_REVERSED = False
+RIGHT_MOTOR_REVERSED = False
+LEFT_TRIM = 1.0
+RIGHT_TRIM = 1.0
+
+# Servos
+CAMERA_SERVO_SPEED = 0.18
+PAN_REVERSED = False
+TILT_REVERSED = False
+TRAPDOOR_CLOSED_ANGLE = 0
+TRAPDOOR_OPEN_ANGLE = 85
+
+# Stop motors/continuous servos if browser commands stop arriving
+COMMAND_TIMEOUT_SECONDS = 0.7
+
+# Raspberry Pi camera
+CAMERA_WIDTH = 640
+CAMERA_HEIGHT = 480
+CAMERA_FPS = 30
+
+# Object detection
+YOLO_ENABLED = True
+MODEL_PATH = "best.pt"
+YOLO_CONFIDENCE = 0.35
+YOLO_IMAGE_SIZE = 320
+RUN_YOLO_EVERY_N_FRAMES = 3
+
+# Web server
+WEB_HOST = "0.0.0.0"
+WEB_PORT = 5000

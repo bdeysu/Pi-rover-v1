@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pi Rover</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-drive-speed="{{ drive_speed }}" data-turn-speed="{{ turn_speed }}">
+    <h1>Pi Rover</h1>
+    <div id="status">Connecting...</div>
+    <img id="video" src="/video" alt="Live rover camera">
+
+    <main>
+        <section class="panel">
+            <h2>Rover</h2>
+            <div class="grid">
+                <span></span><button data-drive="forward">W</button><span></span>
+                <button data-drive="left">A</button><button class="stop" id="stop">■</button><button data-drive="right">D</button>
+                <span></span><button data-drive="backward">S</button><span></span>
+            </div>
+            <p>Keyboard: W A S D · Space stops</p>
+        </section>
+
+        <section class="panel">
+            <h2>Camera</h2>
+            <div class="grid">
+                <span></span><button data-camera="up">↑</button><span></span>
+                <button data-camera="left">←</button><button class="stop" id="camera-stop">■</button><button data-camera="right">→</button>
+                <span></span><button data-camera="down">↓</button><span></span>
+            </div>
+            <p>Keyboard: arrow keys</p>
+        </section>
+
+        <section class="panel">
+            <h2>Trapdoor</h2>
+            <button class="door open" data-door="open">Open</button>
+            <button class="door close" data-door="close">Close</button>
+            <button class="door" data-door="toggle">Toggle</button>
+            <p>Keyboard: O, C, or T</p>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='controls.js') }}"></script>
+</body>
+</html>
