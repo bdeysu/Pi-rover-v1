@@ -4,10 +4,23 @@ from gpiozero import OutputDevice, PWMOutputDevice
 
 
 class TB6612Motor:
-    def __init__(self, pwm_pin, in1_pin, in2_pin, reversed=False, trim=1.0):
-        self.pwm = PWMOutputDevice(pwm_pin, frequency=1000, initial_value=0)
-        self.in1 = OutputDevice(in1_pin, initial_value=False)
-        self.in2 = OutputDevice(in2_pin, initial_value=False)
+    def __init__(self, pwm_pin, in1_pin, in2_pin, reversed=False, trim=1.0, pin_factory=None):
+        self.pwm = PWMOutputDevice(
+            pwm_pin,
+            frequency=1000,
+            initial_value=0,
+            pin_factory=pin_factory,
+        )
+        self.in1 = OutputDevice(
+            in1_pin,
+            initial_value=False,
+            pin_factory=pin_factory,
+        )
+        self.in2 = OutputDevice(
+            in2_pin,
+            initial_value=False,
+            pin_factory=pin_factory,
+        )
         self.reversed = reversed
         self.trim = trim
 
