@@ -1,13 +1,8 @@
-"""Interactive trapdoor calibration tool.
-
-Run this file before main program:
-    python3 calibrate_trapdoor.py
-"""
+#Interactive trapdoor calibration tool.
 
 from time import sleep
-
 from gpiozero import AngularServo
-
+from gpiozero.pins.lgpio import LGPIOFactory
 import config
 from calibration import CALIBRATION_FILE, load_trapdoor_angles, save_trapdoor_angles
 
@@ -15,7 +10,6 @@ from calibration import CALIBRATION_FILE, load_trapdoor_angles, save_trapdoor_an
 MIN_SAFE_ANGLE = 0
 MAX_SAFE_ANGLE = 180
 STARTING_STEP = 5
-
 
 def limit_angle(angle):
     return max(MIN_SAFE_ANGLE, min(MAX_SAFE_ANGLE, angle))
@@ -40,6 +34,7 @@ def main():
     current_angle = closed_angle
     step = STARTING_STEP
 
+    pin_factory = LGPIOFactory()
     servo = AngularServo(
         config.TRAPDOOR_SERVO_PIN,
         min_angle=MIN_SAFE_ANGLE,
@@ -47,6 +42,7 @@ def main():
         min_pulse_width=0.0005,
         max_pulse_width=0.0025,
         initial_angle=current_angle,
+        pin_factory=pin_factory,
     )
 
     print("Trapdoor calibration")
@@ -101,9 +97,7 @@ def main():
         # hold safely when servo power/control is released.
         servo.angle = None
         servo.close()
+        pin_factory.close()
         print("Servo released. Calibration program stopped.")
-
-
 if __name__ == "__main__":
     main()
-
