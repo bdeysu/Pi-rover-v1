@@ -1,9 +1,8 @@
-"""GPIO hardware setup."""
+""GPIO hardware setup."""
 
 from time import time
-
 from gpiozero import AngularServo, OutputDevice, Servo
-
+from gpiozero.pins.lgpio import LGPIOFactory
 import config
 from calibration import load_trapdoor_angles
 from motor import TB6612Motor
@@ -12,8 +11,14 @@ from state import state
 
 class RoverHardware:
     def __init__(self):
+        # Use one shared lgpio connection for every GPIO device.
+        self.pin_factory = LGPIOFactory()
         self.trapdoor_angles = load_trapdoor_angles()
-        self.standby = OutputDevice(config.STBY_PIN, initial_value=True)
+        self.standby = OutputDevice(
+            config.STBY_PIN,
+            initial_value=True,
+            pin_factory=self.pin_factory,
+        )
 
         self.left_motor = TB6612Motor(
             config.LEFT_PWM_PIN,
@@ -21,6 +26,7 @@ class RoverHardware:
             config.LEFT_IN2_PIN,
             reversed=config.LEFT_MOTOR_REVERSED,
             trim=config.LEFT_TRIM,
+            pin_factory=self.pin_factory,
         )
         self.right_motor = TB6612Motor(
             config.RIGHT_PWM_PIN,
@@ -28,21 +34,23 @@ class RoverHardware:
             config.RIGHT_IN2_PIN,
             reversed=config.RIGHT_MOTOR_REVERSED,
             trim=config.RIGHT_TRIM,
+            pin_factory=self.pin_factory,
         )
 
-        # These are continuous-rotation servos. Their value controls speed,
-        # not angle. None stops the control pulses and normally stops movement.
+        # These are continuous-rotation servos. Their value controls speed, not angle. None stops the control pulses and normally stops movement.
         self.pan_servo = Servo(
             config.PAN_SERVO_PIN,
             min_pulse_width=0.0005,
             max_pulse_width=0.0025,
             initial_value=None,
+            pin_factory=self.pin_factory,
         )
         self.tilt_servo = Servo(
             config.TILT_SERVO_PIN,
             min_pulse_width=0.0005,
             max_pulse_width=0.0025,
             initial_value=None,
+            pin_factory=self.pin_factory,
         )
         self.trapdoor_servo = AngularServo(
             config.TRAPDOOR_SERVO_PIN,
@@ -51,6 +59,7 @@ class RoverHardware:
             min_pulse_width=0.0005,
             max_pulse_width=0.0025,
             initial_angle=self.trapdoor_angles["closed_angle"],
+            pin_factory=self.pin_factory,
         )
 
     def drive(self, left_speed, right_speed):
@@ -114,3 +123,4 @@ class RoverHardware:
         self.tilt_servo.close()
         self.trapdoor_servo.close()
         self.standby.close()
+        self.pin_factory.close()
