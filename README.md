@@ -50,7 +50,7 @@ On Raspberry Pi OS:
 
 ```bash
 sudo apt update
-sudo apt install python3-opencv python3-gpiozero python3-picamera2
+sudo apt install python3-opencv python3-gpiozero python3-lgpio python3-picamera2
 python3 -m venv --system-site-packages .venv
 source .venv/bin/activate
 pip install Flask ultralytics
@@ -62,6 +62,82 @@ Then open `http://PI_ADDRESS:5000` on a device on the same network.
 Using `--system-site-packages` lets the virtual environment see the Picamera2,
 OpenCV, and GPIO packages installed by Raspberry Pi OS. This is normally more
 reliable than trying to install Picamera2 entirely through pip.
+
+## Run automatically on boot
+
+After the rover works when started manually, you can make Raspberry Pi OS start it automatically whenever the Pi turns on. The recommended way is a `systemd` service.
+
+This example assumes the project is located here:
+
+```bash
+/home/pi/pi_rover
+```
+
+Create a service file:
+
+```bash
+sudo nano /etc/systemd/system/pi-rover.service
+```
+
+Paste it into the file:
+
+```ini
+[Unit]
+Description=Pi Rover Flask Control App
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/home/pi/pi_rover
+ExecStart=/home/pi/pi_rover/.venv/bin/python /home/pi/pi_rover/app.py
+Restart=always
+RestartSec=5
+User=pi
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Save and exit 
+
+Enable and start the service:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable pi-rover.service
+sudo systemctl start pi-rover.service
+```
+
+Check if it is running:
+
+```bash
+sudo systemctl status pi-rover.service
+```
+
+View live logs:
+
+```bash
+journalctl -u pi-rover.service -f
+```
+
+Restart it after changing code:
+
+```bash
+sudo systemctl restart pi-rover.service
+```
+
+Stop it temporarily:
+
+```bash
+sudo systemctl stop pi-rover.service
+```
+
+Disable automatic startup:
+
+```bash
+sudo systemctl disable pi-rover.service
+```
 
 ## Raspberry Pi camera
 
@@ -118,4 +194,4 @@ then remember them:
 
 The utility creates `trapdoor_calibration.json` in the project folder. The main
 rover automatically loads this file at startup. If the file is missing or
-invalid, it safely falls back to the angles in `config.py`.
+invalid, 
