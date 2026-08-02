@@ -11,6 +11,12 @@ hardware control, and Ultralytics YOLO for object detection. Safety features
 include an automatic command watchdog that stops movement if communication
 with the browser is interrupted.
 
+
+## Demo Video
+
+You can watch the [Pi rover v1 small demo on YouTube](https://www.youtube.com/watch?v=gKcCJFNeAG8).
+
+
 ## File map
 
 - `app.py` is the starting point. It creates the web API, starts the camera and
@@ -154,7 +160,7 @@ rpicam-hello
 On older Raspberry Pi OS releases the equivalent test command may be
 `libcamera-hello`.
 
-## Explanation of important code details
+## Explanation of important details
 
 ### Continuous and positional servos
 
@@ -167,6 +173,10 @@ given a real angle. Tune pulse widths and angles carefully for your servos.
 Flask requests, camera capture, and the watchdog run at the same time. The
 shared `state.lock` makes a small protected section where only one thread may
 read/change related values.
+
+### YOLO Dataset
+
+For training the model, I used the public **[HOWA dataset](https://www.iuii.ua.es/datasets/howa/)**.
 
 ### YOLO frame skipping
 
